@@ -1,0 +1,128 @@
+body {
+	font-family: 'Roboto';
+  background-color: #E0E0E0;
+  /* height: 700px; */
+  padding-top: 70px
+}
+
+.thumbnail img {
+  width: 100%;
+}
+
+.ratings {
+  color: #d17581;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.thumbnail {
+  padding: 0;
+}
+
+.thumbnail .caption-full {
+  padding: 9px;
+  color: #333;
+}
+
+footer {
+  margin: 50px 0;
+}
+nav li>div{
+  color: #999;
+  text-decoration: none;
+  position: relative;
+  display: block;
+  padding: 13px 15px;
+}
+.nav{
+  font-size: 18px;
+  font-weight: 100;
+}
+.can{
+  font-size: 16px;
+  font-weight: 300;
+}
+h5{
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 100;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#main {
+  resize:vertical;
+  overflow:auto;
+  background-color: grey;
+}
+#main_white {
+  resize:vertical;
+  overflow:auto;
+  background-color: #E0E0E0;
+}
+
+#legend {
+  padding: 10px 0 0 3px;
+}
+
+#sequence text, #legend text {
+  font-weight: 600;
+  fill: #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node:not(:hover) .nodetext {
+  display: none;
+}
+
+marker{
+  fill:#000;
+}
+
+text {
+  font-size: 14px;
+  pointer-events: none;
+  align: center;
+}
+
+.bar rect {
+  shape-rendering: crispEdges;
+}
+.bar:hover {
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+  fill: orange;
+}
+.bar text {
+  fill: white;
+  font: 10px;
+  text-anchor: end;;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+#main h5{
+  color:white;
+}
+.expl{
+  color:white;
+}
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+      stroke-width: 0;
+}

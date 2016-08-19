@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="D3js demo">
+    <meta name="author" content="Konstantinos Skianis">
+    <meta name="keywords" content="HTML,CSS,JavaScript,d3js">
+    <title>d3js</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="css/item.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400"/>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+        
+            <div class="col-md-2">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">D3JS demo <span class="glyphicon glyphicon-stats"></span></a>
+              </div>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a id="leg_link" href="javascript:drawLegend();">Show legend</a>
+                    </li>
+                    <li><a id="distr" href="javascript:generateDistr(this);">Degree distribution</a>
+                    </li>
+                    <li><a id="pgrnk" href="javascript:pageRank();">PageRank</a>
+                    <li><div>Highlight duration:</div></li>
+                    <li><a><input type="range" id="range1" name="points" min="1" max="100" value="1" oninput="showVal(this.value)" onchange="showVal(this.value)"></a>
+                    </li>
+                    </ul>
+                     <div class="pull-right">
+                        <form class="navbar-form" role="search" onsubmit="return searchNode();">
+                          <div id="the-basics" class="input-group">
+                            <input type="text" id="srch-term" class="typeahead form-control" data-provide="typeahead" placeholder="Search for a node..." name="srch-term" autocomplete="off"></input>
+                            <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                          </div>
+                          <!-- <select id="mySelect" style="display:none; position:absolute"></select> -->
+                        </form>
+                     </div>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <div class="can"> 
+    <div class="container-fluid">
+
+            <div class="col-md-2">
+                <!-- <p class="lead">Graph approach</p> -->
+                <div class="list-group">
+                  <div id="leg_wrapper" style="display:none">
+                    <hr>
+                    <div id="leg_title"></div>
+                    <div id="legend"></div>
+                    <hr>
+                    <div id="edge_leg_title"></div>
+                    <div id="edge_legend"></div>
+                  </div>
+                  <hr>
+                    <div>The data are random names.</div>
+                    <hr>
+                    <div>Create the degree distributions of the graph.</div><br>
+                    <input class="btn btn-primary" type="button" id="generateDistr" onclick="generateDistr(this)" value="Degree distribution">
+                    <form id="myForm">
+                      <hr>
+                      <div>Select the community of a node when hovering.</div><br>
+                      <input type="radio" name="group1" value="1" checked> hop-1 Community</input><br>
+                      <input type="radio" name="group1" value="2"> hop-2 Community</input><br>
+                      <input type="radio" name="group1" value="3"> hop-3 Community</input>
+                      </form><hr>
+                    Select the time you want for keeping the hop: 1-100 secs.<br><br>(100 = INF)
+                    <input id="range2" value="1" oninput="showVal(this.value)" onchange="showVal(this.value)" size="4">
+                      <hr>
+                      <div id="exp">On mouseover we highlight the hop-n community of the node. </div>
+                      <hr>
+                      
+                      <div>The thickness of an edge represents the normalized frequency of the connection.</div>
+                </div>
+            </div>
+
+            <div class="col-md-10">
+                <div class="thumbnail">
+                  <div class="caption-full">
+                        <div class="row">
+                          <div class="col-md-3">
+                              <span class="glyphicon glyphicon-zoom-in"></span> Zoom in and out the graph.
+                          </div>
+                          <div class="col-md-3">
+                              <span class="glyphicon glyphicon-move"></span> Drag the graph or nodes. 
+                          </div>
+                          <div class="col-md-3">
+                              <span class="glyphicon glyphicon-screenshot"></span> Hover over nodes.
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div>
+                                Select a text file: 
+                                <input type="file" id="fileInput"><input class="btn btn-primary" type="button" onclick="startSIR()" value="SIR">
+                            </div>
+                            <br>
+                            <pre id="fileDisplayArea"><pre>
+                          </div>
+                        </div>
+                    <div>
+                </div>
+
+                <div class="thumbnail">
+                    <div class="caption-full">
+                        <div id="main">
+                              <div id="chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="thchart2" class="thumbnail" style="display:none">
+                    <img class="img-responsive" alt="">
+                    <div class="caption-full">
+                        <div id="main">
+                              <div id="chart2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="thchart3" class="thumbnail" style="display:none">
+                    <img class="img-responsive" alt="">
+                    <div class="caption-full">
+                        <div id="main">
+                              <div id="chart3"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="thchart4" class="thumbnail" style="display:none">
+                    <img class="img-responsive" alt="">
+                    <div class="caption-full">
+                        <div id="main">
+                              <div id="chart4"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="thchart5" class="thumbnail" style="display:none">
+                    <img class="img-responsive" alt="">
+                    <div class="caption-full">
+                        <div id="main_white">
+                              <div id="chart5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!-- /.container -->
+
+    <div class="container-fluid">
+      <footer>
+        <hr>
+        <p>Created by <a href="http://www.lix.polytechnique.fr/~kskianis/" target="blank">Konstantinos Skianis</a> powered by <a href="http://getbootstrap.com/" target="blank">Bootstrap</a> and <a href="http://d3js.org" target="blank">D3js</a>
+        </p>
+      </footer>
+    </div>
+</div>
+    <!-- /.container -->
+
+    <!-- JavaScript -->
+
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/sylvester.js"></script>
+<script src="js/sylvester.src.js"></script>
+<script src="js/typeahead.js"></script>
+<!-- <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script> -->
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script>
+
+var nodes;
+var links;
+
+function startSIR(){
+
+//window.onload = function() {
+  var fileInput = document.getElementById('fileInput');
+  var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+  //fileInput.addEventListener('change', function(e) {
+      var file = fileInput.files[0];
+      var textType = /text.*/;
+
+      if (file.type.match(textType)) {
+          var reader = new FileReader();
+
+          reader.onload = function(e) {
+            //fileDisplayArea.innerText = reader.result;
+
+            // By lines
+            var lines = reader.result.split('\n');
+            //for(var line = 1; line < lines.length-4; line++){
+            var line = 1;
+            
+            function delayLoop(){
+              setTimeout(function () {
+                var res = lines[line].split(" ");
+                var s = res[1].replace(/(^\[)|(\]$)/g, "");
+                s = s.replace(/(,$)/g, "");
+                var nodesC = s.split(",");
+                
+                var nodeNeighbors = nodesC;
+                alert(nodeNeighbors.join());
+              
+                svg = d3.select("svg");
+
+                //var d = svg.selectAll("rect").filter(function (d, i) { return i === 0;}).style('stroke', 'orange');
+                s = 0;
+                var neigh = d3.select("#chart").selectAll("g").filter(function(){
+                  return nodeNeighbors.indexOf(d3.select(this).select("text").html().toLowerCase())>-1 ;
+                });
+                // Reset all circles - we will do this in mouseout also
+                svg.selectAll('rect').style('stroke',null);
+                
+                svg.selectAll("rect").style("fill-opacity",null);
+
+                neigh.select("rect").style("fill-opacity",1);
+                neigh.select("rect").style("stroke","yellow");
+                neigh.select("rect").style("stroke-width",6);
+                neigh.select("rect").style("stroke-opacity",1);
+                d = neigh;
+                
+                //d3.selectAll(".link").transition().style("opacity",-1);
+                // now we select the neighboring circles and apply whatever style we want. 
+                // Note that we could also filter a selection of links in this way if we want to 
+                // Highlight those as well
+
+                // svg.selectAll("rect").filter(function (d, i) { 
+                //   var selected;
+                //   for(node in nodeNeighbors){
+                //     if (i==node){
+                //       selected.push(node);
+                //     }
+                //     alert(selected);
+                //     return selected;
+                //   }
+                // })
+                // .style('stroke', 'orange');
+
+                // svg.selectAll('g').filter(function(g) {
+                //     // I filter the selection of all circles to only those that hold a node with an
+                //     // index in my listg of neighbors
+                //     return nodeNeighbors.indexOf(g.index) > -1;
+                // })
+                // .style('stroke', 'orange');
+
+                function isConnected(a, b) {
+                  return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+                }
+
+                var linkedByIndex = {};
+
+                links.forEach(function(d) {
+                    linkedByIndex[d.source.index + "," + d.target.index] = 1;
+                });
+                
+                var node = svg.selectAll(".node");
+
+                node.select("rect").transition().duration(1000).style("stroke-opacity", function(o) {
+                    thisOpacity = 1;
+                    this.setAttribute('fill-opacity', thisOpacity);
+                    return thisOpacity;
+                });
+
+                var link = svg.selectAll(".link");
+
+                link.style("opacity", function(o) {
+                    return o.source.index === d.index || o.target.index === d.index ? 1 : .1;
+                });
+
+                link.transition().duration(1000).style("stroke", function(o) {
+                  if(o.source.index === d.index){
+                      return fill(0);
+                  }else if(o.target.index === d.index){
+                      return fill(1);
+                  }
+                });
+                line++;
+                if(line < lines.length-4){
+                  delayLoop();
+                }
+              }, 2000);
+            }
+            delayLoop();
+          }
+
+          reader.readAsText(file);    
+      } else {
+          fileDisplayArea.innerText = "File not supported!"
+      }
+  //});
+}
+
+d3.csv("output.txt", function(links_data){
+
+  var nodesByName = {};
+
+  // Create nodes for each unique source and target.
+  links_data.forEach(function(link) {
+    link.source = parseInt(nodeByName(link.source).name);
+    link.target = parseInt(nodeByName(link.target).name);
+    link.value = 1;
+    link.type = "g";
+    link.weight = 0;
+  });
+
+  links = links_data;
+  // Extract the array of nodes from the map by name.
+  nodes = d3.values(nodesByName);
+
+  runMain(nodes,links);
+
+  function nodeByName(name) {
+    return nodesByName[name] || (nodesByName[name] = {name: name});
+  }
+});
+
+function runMain(nodes,links){
+  // alert(JSON.stringify(nodes));
+  // alert(JSON.stringify(links));
+  var colors = {
+    "only-inlinks": "#ff7f0e",
+    "only-outlinks": "#2ca02c",
+    "both": "#1f77b4",
+    "important": "#d62728"
+  };
+
+  var color = d3.scale.ordinal()
+    .range(["#1f77b4", "#ff7f0e","#2ca02c","#d62728"])
+    .domain(d3.range(0,4));
+
+  //var links = fomc;
+  var width = 1250,
+      height = 1000;
+
+  var force = d3.layout.force()
+      .nodes(nodes)
+      .links(links)
+      .size([width, height])
+      .linkDistance(100)
+      .charge(-500)
+      .on("tick", tick)
+      //.on("mousedown", mousedown)
+      .start();
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      //.attr("class", "chart")
+      .append("g")
+      .attr("width", width + 10 + 10)
+      .attr("height", height + 10 + 10)
+      .attr("pointer-events", "all")
+      //.attr("transform", "translate(" + 10 + "," + 10 + ")")
+      .call(d3.behavior.zoom().scaleExtent([0.2, 5]).on("zoom", redraw))
+      .append("g")
+      .on("mousemove.drag", mousemove())
+      .on("touchmove.drag", mousemove())
+      .on("mouseup.drag",   mouseup())
+      .on("touchend.drag",  mouseup());
+
+      //svg.append("g");
+  svg.append('rect')
+      .attr("x",-1000)
+      .attr("y", -1000)
+      .attr('width', 6000)
+      .attr('height', 6000)
+      .attr('fill', 'rgba(1,1,1,0)');
+
+  // Per-type markers, as they don't inherit styles.
+  svg.append("svg:defs").selectAll("marker")
+      .data(["g"])
+      .enter().append("svg:marker")
+      .attr("id", String)
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 80)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("svg:path")
+      .attr("d", "M0,-5L10,0L0,5");
+
+  var fill = d3.scale.ordinal()
+      .range(["#990099", "#66CCFF"])
+      .domain(d3.range(2));
+
+  var fill_colors = {
+      "outgoing": "#990099",
+      "ingoing": "#66CCFF"
+  };
+
+  var link = svg.selectAll(".link")
+      .data(links)
+      .enter().append("svg:line")
+      .attr("class", function(d){return "link "+d.type})
+      .attr("marker-end", function(d){ return "url(#"+d.type+")"})
+        //.on("mouseover",mouseover)   
+      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+  var node = svg.selectAll(".node")
+      .data(nodes)
+      .enter().append("g")
+      .attr("type", "g1")
+     // .on("mouseover", mouseover)
+      .on("mouseover", function(d){ 
+            
+                d3.select(this).select("rect").style("stroke-width", 6);
+               
+                var radios = document.getElementsByName('group1');
+
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        rg = radios[i].value;
+                        // only one radio can be logically checked, don't check the rest
+                        break;
+                    }
+                }
+
+                var nodeNeighbors = links.filter(function(link) {
+                  // Figure out the neighboring node id's with brute strength because the graph is small
+                
+                  // Filter the list of links to only those links that have our target 
+                  // node as a source or target
+                  
+                    return link.source.index === d.index || link.target.index === d.index;
+                   })
+                  .map(function(link) {
+                  // Map the list of links to a simple array of the neighboring indices - this is
+                  // technically not required but makes the code below simpler because we can use         
+                  // indexOf instead of iterating and searching ourselves.
+                  return link.source.index === d.index ? link.target.index : link.source.index; 
+                });
+            
+        
+                // Reset all circles - we will do this in mouseout also
+                svg.selectAll('rect').style('stroke',null);
+                
+                svg.selectAll("rect").style("fill-opacity",null);
+                
+                //d3.selectAll(".link").transition().style("opacity",-1);
+                // now we select the neighboring circles and apply whatever style we want. 
+                // Note that we could also filter a selection of links in this way if we want to 
+                // Highlight those as well
+
+                svg.selectAll('g').filter(function(g) {
+                    // I filter the selection of all circles to only those that hold a node with an
+                    // index in my listg of neighbors
+                    return nodeNeighbors.indexOf(g.index) > -1;
+                })
+                .style('stroke', 'orange');
+
+                function isConnected(a, b) {
+                  return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+                }
+
+                if(rg == 1){
+
+                    var linkedByIndex = {};
+                    links.forEach(function(d) {
+                        linkedByIndex[d.source.index + "," + d.target.index] = 1;
+                    });
+
+                    node.select("rect").transition().duration(1000).style("stroke-opacity", function(o) {
+                        thisOpacity = isConnected(d, o) ? 1 : .05;
+                        this.setAttribute('fill-opacity', thisOpacity);
+                        return thisOpacity;
+                    });
+
+                    link.style("opacity", function(o) {
+                        return o.source.index === d.index || o.target.index === d.index ? 1 : .1;
+                    });
+
+                    link.transition().duration(1000).style("stroke", function(o) {
+                      if(o.source.index === d.index){
+                          return fill(0);
+                      }else if(o.target.index === d.index){
+                          return fill(1);
+                      }
+                    });
+
+                }else if(rg == 2){
+
+
+                    var linkedByIndex = {};
+                    links.forEach(function(d) {
+                        linkedByIndex[d.source.index + "," + d.target.index] = 1;
+                    });
+
+                    var connected = [d];
+                  
+                    node.each(function(o) { if(isConnected(d, o)) { connected.push(o); } });
+                    
+                    node.select("rect").transition().style("stroke-opacity", function(o) {
+                        thisOpacity = .1;
+                        connected.forEach(function(e) { 
+                            if(isConnected(e, o)) { thisOpacity = 1; }
+                        });
+                        this.setAttribute('fill-opacity', thisOpacity);
+                        return thisOpacity;
+                    });
+
+                    link.style("opacity", function(o) {
+                        thisOpacity = .1;
+                        connected.forEach(function(e) { 
+                            if(isConnected(e, o) || isConnected(o.source,d) || isConnected(o.target,d)) { thisOpacity = 1; }
+                        });
+                        this.setAttribute('fill-opacity', thisOpacity);
+                        return thisOpacity;
+                        //return o.source === d || o.target === d ? 1 : .1;
+                    });
+                    link.transition().duration(1000).style("stroke", function(o) {
+                        if(o.source === d){
+                          return fill(0);
+                        }else if(o.target === d){
+                          return fill(1);
+                        }else{
+                          return "#000";
+                        }
+                    });
+                  
+                }else if(rg == 3){
+
+                    var linkedByIndex = {};
+                    links.forEach(function(d) {
+                        linkedByIndex[d.source.index + "," + d.target.index] = 1;
+                    });
+
+                    var connected = [d];
+                  
+                    node.each(function(o) { 
+                      if(isConnected(d, o)) { 
+                        connected.push(o);
+                        node.each(function(f){
+                            if(isConnected(o,f)) { 
+                              connected.push(f);
+                            }
+                        });
+                      } 
+                    });
+                    
+                    node.select("rect").transition().style("stroke-opacity", function(o) {
+                        thisOpacity = .1;
+                        connected.forEach(function(e) { 
+                            if(isConnected(e, o)) { thisOpacity = 1; }
+                        });
+                        this.setAttribute('fill-opacity', thisOpacity);
+                        return thisOpacity;
+                    });
+
+                    link.style("opacity", function(o) {
+                        thisOpacity = .1;
+                          
+                            connected.forEach(function(f) {
+                            if(isConnected(o.source,d) || isConnected(o.target,d) || ((isConnected(o.source,f) || isConnected(o.target,f)) && (isConnected(f, d) ) )) { 
+                                  thisOpacity = 1;
+                            }
+                          
+                        });
+                        this.setAttribute('fill-opacity', thisOpacity);
+                        return thisOpacity;
+                        //return o.source === d || o.target === d ? 1 : .1;
+                    })
+                    link.transition().duration(1000).style("stroke", function(o) {
+                        if(o.source === d){
+                          return fill(0);
+                        }else if(o.target === d){
+                          return fill(1);
+                        }else{
+                          return "#000";
+                        }
+                    });
+                }
+
+                          d3.select(this).select("rect").style("stroke", "orange"); 
+                          d3.select(this).select("text").style("font-size", "20px");
+
+                      //}//if range2
+                  })
+              .on("mouseout",  function(d) { 
+                  // if(isConnected(d, o)) {
+
+                      var timer_l = document.getElementById("range2").value;
+                      
+                      if(timer_l<100){
+                        timer = timer_l *1000;
+                      }else{
+                        timer = 10000000;
+                      }
+
+                        var nodeNeighbors = links.filter(function(link) {
+                            // Filter the list of links to only those links that have our target 
+                            // node as a source or target
+                            return link.source.index === d.index || link.target.index === d.index;})
+                        .map(function(link) {
+                            // Map the list of links to a simple array of the neighboring indices - this is
+                            // technically not required but makes the code below simpler because we can use         
+                            // indexOf instead of iterating and searching ourselves.
+                            return link.source.index === d.index ? link.target.index : link.source.index; });
+                        svg.selectAll('g').filter(function(g) {
+                            // I filter the selection of all circles to only those that hold a node with an
+                            // index in my listg of neighbors
+                            return nodeNeighbors.indexOf(g.index) > -1;
+                        })
+                        .style('stroke', null);
+
+                      d3.selectAll("g").select("rect").style('stroke',null);
+                      d3.select(this).select("rect").style("stroke-width", 1.5); 
+                      d3.select(this).select("text").style("font-size", "13px");
+
+                      d3.selectAll("rect").transition().duration(timer).style("fill-opacity",1);
+                      d3.selectAll(".link").transition().duration(timer).style("stroke",null);
+                      d3.selectAll(".link").transition().duration(timer).style("opacity",1);
+                  })
+              .call(force.drag);
+
+  //node.append("circle")
+  //    .attr("r", 8);
+
+  node.append("rect")
+      .attr("width", function(d){return d.name.length*10})
+      .attr("height", 25)   
+      .attr("rx",20)
+      .attr("ry",20)
+      .attr("x", function(d){ return -d.name.length*5})
+      .attr("y", -12.5)
+      .attr("fill", "black")
+      .attr("weight", function(d){ return d.weight })
+      .append("svg:title")
+      .text(function(d) {return "degree:"+d.weight; });
+
+  node.append("text")
+      .attr("class", "nodetext")
+      .attr("alignment-baseline", "middle")
+      .attr("text-anchor", "middle")
+      .style("fill", function(d) {return color(d.group)})
+      .text(function(d) { return d.name; })
+      .on('mousedown',mousedown(this));
+
+  function mousedown(d){
+      d3.select("body").append("<div style=\"position: fixed ; top:500px ; left:100px\">text</div>")
+  }
+      
+  function mousedown() {
+    // add links to any nearby nodes
+    nodes.forEach(function(target) {
+      var x = target.x - node.x,
+          y = target.y - node.y;
+      if (Math.sqrt(x * x + y * y) < 30) {
+        links.push({source: node, target: target});
+      }
+    });
+    //restart();
+  }
+
+  registerKeyboardHandler = function(callback) {
+    var callback = callback;
+    d3.select(window).on("keydown", callback);  
+  };
+
+  // Move d to be adjacent to the cluster node.
+  function cluster(alpha) {
+    var max = {};
+
+    // Find the largest node for each cluster.
+    nodes.forEach(function(d) {
+      if (!(d.color in max) || (d.radius > max[d.color].radius)) {
+        max[d.color] = d;
+      }
+    });
+
+    return function(d) {
+      var node = max[d.color],
+          l,
+          r,
+          x,
+          y,
+          i = -1;
+
+      if (node == d) return;
+
+      x = d.x - node.x;
+      y = d.y - node.y;
+      l = Math.sqrt(x * x + y * y);
+      r = d.radius + node.radius;
+      if (l != r) {
+        l = (l - r) / l * alpha;
+        d.x -= x *= l;
+        d.y -= y *= l;
+        node.x += x;
+        node.y += y;
+      }
+    };
+  }
+
+  // Resolves collisions between d and all other circles.
+  function collide(alpha) {
+    var quadtree = d3.geom.quadtree(nodes);
+    return function(d) {
+      var r = d.radius + radius.domain()[1] + padding,
+          nx1 = d.x - r,
+          nx2 = d.x + r,
+          ny1 = d.y - r,
+          ny2 = d.y + r;
+      quadtree.visit(function(quad, x1, y1, x2, y2) {
+        if (quad.point && (quad.point !== d)) {
+          var x = d.x - quad.point.x,
+              y = d.y - quad.point.y,
+              l = Math.sqrt(x * x + y * y),
+              r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+          if (l < r) {
+            l = (l - r) / l * alpha;
+            d.x -= x *= l;
+            d.y -= y *= l;
+            quad.point.x += x;
+            quad.point.y += y;
+          }
+        }
+        return x1 > nx2
+            || x2 < nx1
+            || y1 > ny2
+            || y2 < ny1;
+      });
+    };
+  }
+
+  //function redraw() {
+  //  console.log("here", d3.event.translate, d3.event.scale);
+  //  vis.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"); }
+  function redraw(){
+
+      var xMax = 5000;
+      var xMin = 1111;
+      var yMax = 3000;
+      var yMin = 700;
+
+      //console.log("here", d3.event.translate, d3.event.scale); 
+      svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");     
+
+      var xoffset = (xMax + xMin) / 2;
+      var yoffset = (yMax + yMin) / 2;
+
+      var xTemp = [(0 - xoffset) * (1/d3.event.scale), (0 + xoffset) * (1/d3.event.scale)];
+      var yTemp = [(0 - yoffset) * (1/d3.event.scale), (0 + yoffset) * (1/d3.event.scale)];
+
+      xMin = xTemp[0] + xoffset;
+      xMax = xTemp[1] + xoffset;
+      yMin = yTemp[0] + yoffset;
+      yMax = yTemp[1] + yoffset;
+
+      //console.log("", xMin, xMax, yMin, yMax);
+
+      //xScale.domain([xMin, xMax]);
+      //yScale.domain([yMax, yMin]);
+
+      //xaxis.call(xAxis);
+      //yaxis.call(yAxis);
+
+      /*svg.attr("d", line)
+          .attr("transform", null)
+          .transition()       
+          .ease("linear");*/
+  }
+
+  function tick(e) {
+      link
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+   
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+      node
+          // .each(cluster(10 * e.alpha * e.alpha))
+          // .each(collide(.5))
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+  }
+
+  function mouseover() {
+      div.transition()
+      .duration(50)
+      .style("opacity", .7);
+      div.html(""+this.weight)
+      .style("left", (d3.event.pageX+5) + "px")
+      .style("width", 20)
+      .style("height", 30)
+      .style("top", (d3.event.pageY - 28) + "px");
+  }
+
+  function mouseout() {
+    d3.select(this).select("circle").transition()
+      .duration(150)
+      .attr("r", 8);
+  }
+
+  function drawLegend() {
+    if(document.getElementById('leg_link').innerHTML=="Show legend"){
+          document.getElementById('leg_link').innerHTML="Close legend";
+          $("#leg_wrapper").fadeIn();
+          document.getElementById('leg_title').innerHTML="";
+          document.getElementById('leg_title').innerHTML="<h5>Node Colors</h5>";
+          document.getElementById('legend').innerHTML="";
+          document.getElementById('edge_leg_title').innerHTML="<h5>Edge Colors</h5>";
+          document.getElementById('edge_legend').innerHTML="";
+          // Dimensions of legend item: width, height, spacing, radius of rounded rect.
+          var li = {
+            w: 150, h: 30, s: 3, r: 3
+          };
+
+          var legend = d3.select("#legend").append("svg:svg")
+              .attr("width", li.w)
+              .attr("height", d3.keys(colors).length * (li.h + li.s));
+
+          var g = legend.selectAll("g")
+              .data(d3.entries(colors))
+              .enter().append("svg:g")
+              .attr("transform", function(d, i) {
+                  return "translate(0," + i * (li.h + li.s) + ")";
+              });
+
+          g.append("svg:rect")
+              .attr("rx", li.r)
+              .attr("ry", li.r)
+              .attr("width", li.w)
+              .attr("height", li.h)
+              .style("fill", function(d) { return d.value; });
+
+          g.append("svg:text")
+              .attr("x", li.w / 2)
+              .attr("y", li.h / 2)
+              .attr("dy", "0.35em")
+              .attr("text-anchor", "middle")
+              .text(function(d) { return d.key; });
+
+          var edge_legend = d3.select("#edge_legend").append("svg:svg")
+              .attr("width", li.w)
+              .attr("height", d3.keys(fill_colors).length * (li.h + li.s));
+
+          var g = edge_legend.selectAll("g")
+              .data(d3.entries(fill_colors))
+              .enter().append("svg:g")
+              .attr("transform", function(d, i) {
+                      return "translate(0," + i * (li.h + li.s) + ")";
+              });
+
+          g.append("svg:rect")
+              .attr("rx", li.r)
+              .attr("ry", li.r)
+              .attr("width", li.w)
+              .attr("height", li.h)
+              .style("fill", function(d) { return d.value; });
+
+          g.append("svg:text")
+              .attr("x", li.w / 2)
+              .attr("y", li.h / 2)
+              .attr("dy", "0.35em")
+              .attr("text-anchor", "middle")
+              .text(function(d) { return d.key; });
+    }else{
+        document.getElementById('leg_link').innerHTML="Show legend";
+        $("#leg_wrapper").fadeOut();
+    }
+  }
+
+
+  function mousemove(){
+    var self = this;
+    return function() {
+      //var p = d3.svg.mouse(self.vis[0][0]),
+         // t = d3.event.changedTouches;
+      
+      if (self.dragged) {
+        self.dragged.y = self.y.invert(Math.max(0, Math.min(self.size.height, p[1])));
+        self.update();
+      };
+
+      if (!isNaN(self.downx)) {
+        d3.select('body').style("cursor", "ew-resize");
+        var rupx = self.x.invert(p[0]),
+            xaxis1 = self.x.domain()[0],
+            xaxis2 = self.x.domain()[1],
+            xextent = xaxis2 - xaxis1;
+        if (rupx != 0) {
+          var changex, new_domain;
+          changex = self.downx / rupx;
+          new_domain = [xaxis1, xaxis1 + (xextent * changex)];
+          self.x.domain(new_domain);
+          self.redraw()();
+        }
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+      };
+      if (!isNaN(self.downy)) {
+        d3.select('body').style("cursor", "ns-resize");
+        var rupy = self.y.invert(p[1]),
+            yaxis1 = self.y.domain()[1],
+            yaxis2 = self.y.domain()[0],
+            yextent = yaxis2 - yaxis1;
+        if (rupy != 0) {
+          var changey, new_domain;
+          changey = self.downy / rupy;
+          new_domain = [yaxis1 + (yextent * changey), yaxis1];
+          self.y.domain(new_domain);
+          self.redraw()();
+        }
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+      }
+    }
+  };
+
+  function mouseup() {
+    var self = this;
+    return function() {
+      document.onselectstart = function() { return true; };
+      d3.select('body').style("cursor", "auto");
+      d3.select('body').style("cursor", "auto");
+      if (!isNaN(self.downx)) {
+        self.redraw()();
+        self.downx = Math.NaN;
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+      };
+      if (!isNaN(self.downy)) {
+        self.redraw()();
+        self.downy = Math.NaN;
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+      }
+      if (self.dragged) { 
+        self.dragged = null 
+      }
+    }
+  }
+}
+
+
+function generateDistr(button){
+
+    var elem = document.getElementById("generateDistr");
+    var elem2 = document.getElementById("deg");
+    
+    if (elem.value=="Degree distribution" || elem2.value=="Degree distribution"){
+      document.getElementById('distr').innerHTML="Close distribution";
+      var ar = [];
+      elem.value = "Close distribution";
+
+      document.getElementById('chart2').innerHTML='<h5>Degree distribution</h5><div class="expl">For xAxis value=30 we count all nodes with degree>=30.</div><input type="button" id="deg" onclick="generateDistr(this)" value="Close distribution"><br>';
+      jQuery('body').animate({scrollTop:$(window).height()});
+	  
+
+      //count all nodes
+      var nodes_counter=0;
+      d3.selectAll("g").select("rect").each( function(d){
+          if(parseInt(d3.select(this).attr("weight"))){
+              nodes_counter++;
+          }
+      });
+
+      //count all links
+      var links_counter=0;
+      d3.selectAll(".link").each( function(d){
+          links_counter++;
+      });
+
+      var maxDeg=0;
+      var counter_bigger = 0;
+      var d_counter = '{"Degrees":[';
+
+      for (var i=1;i<30;i++){ 
+          counter = 0;
+          d3.selectAll("g").select("rect").each( function(d){
+            
+              if(parseInt(d3.select(this).attr("weight")) == i){
+                  counter++;
+              }
+            
+          });
+          d_counter+= '{"number":'+i+',"value":'+counter+'},';
+          
+      }
+
+      d3.selectAll("g").select("rect").each( function(d){
+        if(parseInt(d3.select(this).attr("weight"))>=31){
+            counter_bigger++;
+        }
+      });
+
+      d_counter+= '{"number":'+30+',"value":'+counter_bigger+'},';
+      d_counter = d_counter.slice(0,d_counter.length-1);
+      d_counter += "]}";;
+      
+      var c=0;
+      d3.selectAll("g").select("rect").each( function(d){
+          if(d3.select(this).attr("weight") != null ){
+            var we = parseInt(d3.select(this).attr("weight"));
+            ar[c]= we;
+            c++;
+          }
+      });
+
+      var json_parsed = $.parseJSON(d_counter);
+      
+      var data = json_parsed.Degrees;
+      
+      var margin = {top: 20, right: 40, bottom: 50, left: 50},
+          width = 760 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom,
+          barHeight = 20;
+
+      var x = d3.scale.ordinal()
+          .rangeRoundBands([0, width], .1)
+          .domain(data.map(function(d) { return d.number; }));
+
+      var y = d3.scale.linear()
+          .range([height, 0])
+          .domain([0, d3.max(data, function(d) { return d.value; })]);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .ticks(10, "%");
+
+      var svg = d3.select("#chart2").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+          .append("text")
+          .attr("x", width/2 )
+          .attr("y", 0 + 40)
+          .attr("dx", ".71em")
+          .style("text-anchor", "end")
+          .text("Degree");
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left +10)
+          .attr("x",0 - (height / 2))
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Number of nodes");
+
+      var xScale = d3.scale.ordinal()
+        .domain(d3.range(data.length))
+        .rangeRoundBands([0, width], 0.05); 
+
+      var yScale = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) {return d.value;})])
+        .range([0, height]);
+
+      //Create labels
+      svg.selectAll(".bar")
+         .data(data)
+         .enter().append("text")
+         .text(function(d) {
+          return d.value;
+         })
+         .attr("text-anchor", "middle")
+         .attr("x", function(d, i) {
+            return xScale(i) + xScale.rangeBand()/2;
+         })
+         .attr("y", function(d) {
+            return y(d.value) - 5;
+         })
+         .attr("font-size", "11px")
+         .attr("fill", "white");
+
+      svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("y", function(d) { return height - .5; })
+            .attr("height", 0)
+            .attr("class", "bar")
+            .attr("fill", function(d, i) { return "rgb(0, 0, " + (d.value * 10) + ")"; })
+            .attr("x", function(d) { return x(d.number); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); });
+     
+      // add legend   
+      var legend = svg.append("g")
+          .attr("class", "legend")
+          //.attr("x", w - 65)
+          //.attr("y", 50)
+          .attr("height", 100)
+          .attr("width", 100)
+          .attr('transform', 'translate(400,50)');
+
+      var legendRect = legend.selectAll('rect');
+
+      legend.append("text")
+           .attr("y", 80)
+           .attr("x", 50)
+           .attr("fill", "white")
+           .text("The max degree of this graph is: "+findMax(ar)+".");
+
+      legend.append("text")
+           .attr("y", 10)
+           .attr("x", 50)
+           .attr("fill", "white")
+           .text("Total nodes of the graph: "+nodes_counter+".");
+
+      legend.append("text")
+           .attr("y", 120)
+           .attr("x", 50)
+           .attr("fill", "white")
+           .text("Total links of the graph: "+links_counter+".");
+      
+
+      //indegree and outdegree charts
+      document.getElementById('chart3').innerHTML='<h5>Indegree distribution</h5>';
+      var counter_in_ar = [];
+      var counter_out_ar = [];
+      var in_degrees_ar = [];
+      var out_degrees_ar = [];
+      var d_counter_in = '{"Degrees":[';
+      var d_counter_out = '{"Degrees":[';
+      var b=0;
+      for (var i=1;i<31;i++){ 
+          counter = 0;
+          counter_out_all=0;
+          counter_in_all=0;
+          d3.selectAll("g").select("rect").each( function(d){
+              counter_out=0;
+              counter_in=0;
+              var nodeNeighbors = links.filter(function(link) {
+                // Figure out the neighboring node id's with brute strength because the graph is small
+              
+                // Filter the list of links to only those links that have our target 
+                // node as a source or target
+                
+                  return link.source === d || link.target=== d;
+              });
+
+              nodeNeighbors.forEach(function(o) {
+                if(o.source === d){
+                    counter_out++;
+                }else if(o.target === d){
+                    counter_in++;
+                }
+              });
+              out_degrees_ar[b]=counter_out;
+              in_degrees_ar[b]=counter_in;
+              b++;
+              if(counter_out==i){
+                  counter_out_all++;
+              }
+              if(counter_in==i){
+                  counter_in_all++;
+              }
+
+          });
+          counter_out_ar[i]=counter_out_all;
+          counter_in_ar[i]=counter_in_all;
+          d_counter_out+= '{"number":'+i+',"value":'+counter_out_all+'},';
+          d_counter_in+= '{"number":'+i+',"value":'+counter_in_all+'},';
+          
+      }
+      d_counter_in = d_counter_in.slice(0,d_counter_in.length-1);
+      d_counter_in += "]}";
+
+      d_counter_out = d_counter_out.slice(0,d_counter_out.length-1);
+      d_counter_out += "]}";
+
+      var json_parsed_in = $.parseJSON(d_counter_in);
+      var json_parsed_out = $.parseJSON(d_counter_out);
+     
+      var data_in = json_parsed_in.Degrees;
+      var data_out = json_parsed_out.Degrees;
+
+      //indegree chart
+      var x = d3.scale.ordinal()
+          .rangeRoundBands([0, width], .1)
+          .domain(data_in.map(function(d) { return d.number; }));
+
+      var y = d3.scale.linear()
+          .range([height, 0])
+          .domain([0, d3.max(data_in, function(d) { return d.value; })]);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .ticks(10, "%");
+
+      var svg = d3.select("#chart3").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+          .append("text")
+          .attr("x", width/2 )
+          .attr("y", 0 + 40)
+          .attr("dx", ".71em")
+          .style("text-anchor", "end")
+          .text("Indegree");
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left +10)
+          .attr("x",0 - (height / 2))
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Number of nodes");
+
+      var xScale = d3.scale.ordinal()
+        .domain(d3.range(data_in.length))
+        .rangeRoundBands([0, width], 0.05); 
+
+      var yScale = d3.scale.linear()
+        .domain([0, d3.max(data_in, function(d) {return d.value;})])
+        .range([0, height]);
+
+      //Create labels
+      svg.selectAll(".bar")
+         .data(data_in)
+         .enter().append("text")
+         .text(function(d) {
+          return d.value;
+         })
+         .attr("y", function(d) { return height - .5; })
+         
+         .attr("text-anchor", "middle")
+         .attr("x", function(d, i) {
+          return xScale(i) + xScale.rangeBand() / 2;
+         })
+         .attr("y", function(d) {
+            return y(d.value) - 5;
+         })
+         .attr("font-size", "11px")
+         .attr("fill", "white")
+         .transition()
+         .duration(1000)
+          .delay(100);
+
+      svg.selectAll(".bar")
+            .data(data_in)
+            .enter().append("rect")
+            .attr("y", function(d) { return height - .5; })
+            .attr("height", 0)
+            .attr("class", "bar")
+            .attr("fill", function(d, i) { return "rgb(0, 0, " + (d.value * 10) + ")"; })
+            .attr("x", function(d) { return x(d.number); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); })
+            .transition()
+            .duration(1000)
+            .delay(100);
+
+      // add legend   
+      var legend = svg.append("g")
+          .attr("class", "legend")
+          //.attr("x", w - 65)
+          //.attr("y", 50)
+          .attr("height", 100)
+          .attr("width", 100)
+          .attr('transform', 'translate(400,50)');
+
+      var legendRect = legend.selectAll('rect');
+
+      legend.append("text")
+           .attr("y", 80)
+           .attr("x", 50)
+           .attr("fill", "white")
+           .text("The max indegree of this graph is: "+findMax(in_degrees_ar)+".");
+
+
+
+      //outdegree chart
+      document.getElementById('chart4').innerHTML='<h5>Outdegree distribution</h5>';
+
+      var x = d3.scale.ordinal()
+          .rangeRoundBands([0, width], .1)
+          .domain(data_out.map(function(d) { return d.number; }));
+
+      var y = d3.scale.linear()
+          .range([height, 0])
+          .domain([0, d3.max(data_out, function(d) { return d.value; })]);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .ticks(10, "%");
+
+      var svg = d3.select("#chart4").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+          .append("text")
+          .attr("x", width/2 )
+          .attr("y", 0 + 40)
+          .attr("dx", ".71em")
+          .style("text-anchor", "end")
+          .text("Outdegree");
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left +10)
+          .attr("x",0 - (height / 2))
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Number of nodes");
+
+      var xScale = d3.scale.ordinal()
+        .domain(d3.range(data_out.length))
+        .rangeRoundBands([0, width], 0.05); 
+
+      var yScale = d3.scale.linear()
+        .domain([0, d3.max(data_out, function(d) {return d.value;})])
+        .range([0, height]);
+
+      //Create labels
+      svg.selectAll(".bar")
+         .data(data_out)
+         .enter().append("text")
+         .text(function(d) {
+          return d.value;
+         })
+         .attr("y", function(d) { return height - .5; })
+         .attr("text-anchor", "middle")
+         .attr("x", function(d, i) {
+          return xScale(i) + xScale.rangeBand() / 2;
+         })
+         .attr("y", function(d) {
+            return y(d.value) - 5;
+         })
+         .attr("font-size", "11px")
+         .attr("fill", "white")
+         .transition()
+         .duration(1000)
+         .delay(100);
+
+      svg.selectAll(".bar")
+            .data(data_out)
+            .enter().append("rect")
+            .attr("y", function(d) { return height - .5; })
+            .attr("height", 0)
+            .attr("class", "bar")
+            .attr("fill", function(d, i) { return "rgb(0, 0, " + (d.value * 10) + ")"; })
+            .attr("x", function(d) { return x(d.number); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); })
+            .transition()
+            .duration(1000)
+            .delay(100);
+
+      // add legend   
+      var legend = svg.append("g")
+          .attr("class", "legend")
+          //.attr("x", w - 65)
+          //.attr("y", 50)
+          .attr("height", 100)
+          .attr("width", 100)
+          .attr('transform', 'translate(400,50)');
+
+      var legendRect = legend.selectAll('rect');
+
+      legend.append("text")
+           .attr("y", 80)
+           .attr("x", 50)
+           .attr("fill", "white")
+           .text("The max outdegree of this graph is: "+findMax(out_degrees_ar)+".");
+
+       $("#thchart2").fadeIn();
+       $("#thchart3").fadeIn();
+       $("#thchart4").fadeIn();
+    }else{
+        elem.value = "Degree distribution";
+        document.getElementById('distr').innerHTML="Degree distribution";
+        $("#thchart2").fadeOut();
+       $("#thchart3").fadeOut();
+       $("#thchart4").fadeOut();
+        $('body').animate({ scrollTop: 0 }, 'slow');
+        window.setTimeout(deleteDistr,1000);
+    }
+
+    d3.selectAll("rect").transition();
+}
+
+
+
+function deleteDistr(){
+  document.getElementById('chart2').innerHTML="";
+  document.getElementById('chart3').innerHTML="";
+  document.getElementById('chart4').innerHTML="";
+}
+
+function showVal(value){
+  document.getElementById('range1').value = value;
+  document.getElementById('range2').value = value;
+}
+
+function findMax(array){
+  var max = 0;
+  var a = array.length;
+  for(counter=0; counter<a; counter++){
+    if(array[counter]>max){
+      max=array[counter];
+    }
+  }
+  return max;
+}
+
+function searchNode(){
+    var s = document.getElementById("srch-term").value;
+    d3.select("#chart").selectAll("g").select("rect").style("stroke","grey");
+    d3.select("#chart").selectAll("g").select("rect").style("stroke-opacity",null);
+    d3.select("#chart").selectAll("g").select("rect").style("stroke-width",1);
+    d3.select("#chart").selectAll("g").select("rect").style("fill-opacity",.1);
+    d3.selectAll(".link").style("opacity",.1);
+    var neigh = d3.select("#chart").selectAll("g").filter(function(){
+      return d3.select(this).select("text").html().indexOf(s)!=-1 || d3.select(this).select("text").html().toLowerCase().indexOf(s)!=-1 ;
+    });
+    neigh.select("rect").style("fill-opacity",1);
+    neigh.select("rect").style("stroke","yellow");
+    neigh.select("rect").style("stroke-width",6);
+    neigh.select("rect").style("stroke-opacity",1);
+    return false;
+}
+
+/***
+* create the adjacency matrix
+*/
+function createAdjacencyMatrix(A,nodeNames){
+    var rect_counter = 0;
+    
+    d3.select("#chart").selectAll("g").select("rect").each(function(d){
+        var that = d3.select(this);
+        var w = parseInt(that.attr("weight"));
+        if(w){
+            rect_counter++;
+        }
+    });
+
+    var c = 0;
+    var j=0;
+    d3.select("#chart").selectAll("g").each(function(d){
+        var that = d3.select(this).select("rect");
+        var w = parseInt(that.attr("weight"));
+        if(w){
+            j=0;
+            A[c] = [];
+            nodeNames[c] = d3.select(this).select("text").html();
+            d3.select("#chart").selectAll("g").select("rect").each(function(g){
+                var other = d3.select(this);
+                var wo = parseInt(other.attr("weight"));
+                if(wo){
+                    // Figure out the neighboring node id's with brute strength because the graph is small
+                  
+                    // Filter the list of links to only those links that have our target 
+                    // node as a source or target
+                    links.forEach(function(li) {
+                        if(li.source===d && li.target===g){
+                            A[c][j] = 1/w;
+                        }
+                    });
+                    if(!A[c][j]){
+                        A[c][j] = 0;
+                    }
+                    j++;
+                }
+            });
+            c++;
+        }
+    });
+    
+}
+
+
+function rowStochastic(damping_factor,A) {
+    
+    var row_length = A.length;
+    var d = (1 - damping_factor) / row_length;
+ 
+    var row_total = [];
+ 
+    for (var x = 0; x < row_length; x++) {
+        row_total.push(0);
+        for (y = 0; y < row_length; y++) {
+            row_total[x] += A[x][y];
+        }
+    }
+ 
+    var a1 = A;
+ 
+    for (var x = 0; x < row_length; x++) {
+        for (var y = 0; y < row_length; y++) {
+            if (row_total[x] > 0) {
+                a1[x][y] = a1[x][y]/row_total[x] + d;
+            }
+            else {
+                a1[x][y] = (1/row_length) + d;
+            }
+        }
+    }
+ 
+    return $M(a1);
+ 
+}
+
+function normalize(s) {
+    var row_length = s.elements.length;
+    var t = 0;
+ 
+    for (var i = 0; i < row_length; i++) {
+        t += s.elements[i];
+    }
+ 
+    return s.multiply((1.0/t));
+}
+
+function eigenvector(s) {
+    var tolerance = 0.000001;
+ 
+    var row_length = s.elements[0].length;
+ 
+    var a = [];
+ 
+    for (var i = 0; i < row_length; i++) {
+        a.push(1);
+    }
+ 
+    var x = $V(a);
+ 
+    var c_old = 0;
+ 
+    for (var i = 0; i < 100; i++) {
+        var x_new = normalize(x);
+        var c_new = x_new[0];
+ 
+        var e = 100 * (c_new - c_old)/c_new;
+        if (Math.abs(e) < tolerance) {
+            break;
+        }
+ 
+        x = s.multiply(x_new);
+        c_old = c_new;
+    }
+ 
+    return $V(x);
+ 
+}
+
+function sortWithIndeces(toSort) {
+  for (var i = 0; i < toSort.length; i++) {
+    toSort[i] = [toSort[i], i];
+  }
+  toSort.sort(function(left, right) {
+    return left[0] < right[0] ? -1 : 1;
+  });
+  toSort.sortIndices = [];
+  for (var j = 0; j < toSort.length; j++) {
+    toSort.sortIndices.push(toSort[j][1]);
+    toSort[j] = toSort[j][0];
+  }
+  return toSort;
+}
+
+function pageRank(){
+    var A = [];
+    var nodeNames = [];
+    var damping_value = 0.825;
+    createAdjacencyMatrix(A,nodeNames);
+    var row_stochastic_matrix = rowStochastic(damping_value,A);
+    var transposed_matrix = row_stochastic_matrix.transpose();
+    var eigenv = eigenvector(transposed_matrix);
+    var normalized_eigenvector = normalize(eigenv);
+    var test = normalized_eigenvector.elements;
+    var le = normalized_eigenvector.elements.length;
+    //var sorted = normalized_eigenvector.elements.sort();
+    var sorted = sortWithIndeces(test);
+    document.getElementById("chart5").innerHTML = "<h5>PageRank sorted results</h5><br>";
+    for(var i=le-1; i>=0; i--){
+        //document.getElementById("chart5").innerHTML += "\n"+sorted[i];
+        document.getElementById("chart5").innerHTML += "Node:"+nodeNames[sorted.sortIndices[i]]+" index:"+sorted.sortIndices[i]+" pagerank:"+sorted[i]+"<br>";
+    }
+    $('#thchart5').fadeIn();
+	$('html,body').animate({ scrollTop:$('#thchart5').offset().top-50},1000);
+}
+/*
+$(document).ready(function() {
+  $('#srch-term').keypress(function(){
+      $("#mySelect").text("");
+      var value = $(this).val();
+      //$("#srch-term").text(value);
+
+      var neigh = nodes.filter(function(d){
+        return d.name.indexOf(value)!=-1 || d.name.toLowerCase().indexOf(value)!=-1 ;
+      });
+      $("#mySelect").fadeIn();
+      var select = document.getElementById('mySelect');
+      var i;
+      for (i = 0; i < neigh.length; i++) {
+          var opt = neigh[i].name;
+          var el = document.createElement("option");
+          el.textContent = opt;
+          el.value = opt;
+          select.appendChild(el);
+      }
+  });
+
+  $('#mySelect').change(function() {
+    document.getElementById("srch-term").value = document.getElementById("mySelect").value;
+  });
+
+  $('#mySelect').focus(function() {
+    document.getElementById("srch-term").value = document.getElementById("mySelect").value;
+  });
+  
+});
+*/
+$('#srch-term').typeahead({
+    source: function (query, process) {
+        names = [];
+        map = {};
+        
+        var data = nodes;
+     
+        $.each(data, function (i, node) {
+            map[node.name] = node;
+            names.push(node.name);
+        });
+     
+        process(names);
+    },
+    updater: function (item) {
+        selectedState = map[item].name;
+        return item;
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp( '(' + this.query + ')', 'gi' );
+        return item.replace( regex, "$1" );
+    }
+});
+</script>
+</body>
+
+</html>
