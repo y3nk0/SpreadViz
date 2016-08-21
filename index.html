@@ -6,7 +6,7 @@
     <meta name="description" content="D3js demo">
     <meta name="author" content="Konstantinos Skianis">
     <meta name="keywords" content="HTML,CSS,JavaScript,d3js">
-    <title>d3js</title>
+    <title>SpreadViz</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
-        
+
             <div class="col-md-2">
               <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -29,7 +29,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">D3JS demo <span class="glyphicon glyphicon-stats"></span></a>
+                <a class="navbar-brand" href="index.html">SpreadViz <span class="glyphicon glyphicon-stats"></span></a>
               </div>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -58,7 +58,7 @@
         </div>
         <!-- /.container -->
     </nav>
-    <div class="can"> 
+    <div class="can">
     <div class="container-fluid">
 
             <div class="col-md-2">
@@ -73,8 +73,8 @@
                     <div id="edge_legend"></div>
                   </div>
                   <hr>
-                    <div>The data are random names.</div>
-                    <hr>
+                    <!-- <div>The nodes are random names.</div>
+                    <hr> -->
                     <div>Create the degree distributions of the graph.</div><br>
                     <input class="btn btn-primary" type="button" id="generateDistr" onclick="generateDistr(this)" value="Degree distribution">
                     <form id="myForm">
@@ -89,7 +89,7 @@
                       <hr>
                       <div id="exp">On mouseover we highlight the hop-n community of the node. </div>
                       <hr>
-                      
+
                       <div>The thickness of an edge represents the normalized frequency of the connection.</div>
                 </div>
             </div>
@@ -102,7 +102,7 @@
                               <span class="glyphicon glyphicon-zoom-in"></span> Zoom in and out the graph.
                           </div>
                           <div class="col-md-3">
-                              <span class="glyphicon glyphicon-move"></span> Drag the graph or nodes. 
+                              <span class="glyphicon glyphicon-move"></span> Drag the graph or nodes.
                           </div>
                           <div class="col-md-3">
                               <span class="glyphicon glyphicon-screenshot"></span> Hover over nodes.
@@ -111,7 +111,7 @@
                         <div class="row">
                           <div class="col-md-12">
                             <div>
-                                Select a text file: 
+                                Select a text file:
                                 <input type="file" id="fileInput"><input class="btn btn-primary" type="button" onclick="startSIR()" value="SIR">
                             </div>
                             <br>
@@ -208,17 +208,17 @@ function startSIR(){
             var lines = reader.result.split('\n');
             //for(var line = 1; line < lines.length-4; line++){
             var line = 1;
-            
+
             function delayLoop(){
               setTimeout(function () {
                 var res = lines[line].split(" ");
                 var s = res[1].replace(/(^\[)|(\]$)/g, "");
                 s = s.replace(/(,$)/g, "");
                 var nodesC = s.split(",");
-                
+
                 var nodeNeighbors = nodesC;
                 alert(nodeNeighbors.join());
-              
+
                 svg = d3.select("svg");
 
                 //var d = svg.selectAll("rect").filter(function (d, i) { return i === 0;}).style('stroke', 'orange');
@@ -228,7 +228,7 @@ function startSIR(){
                 });
                 // Reset all circles - we will do this in mouseout also
                 svg.selectAll('rect').style('stroke',null);
-                
+
                 svg.selectAll("rect").style("fill-opacity",null);
 
                 neigh.select("rect").style("fill-opacity",1);
@@ -236,13 +236,13 @@ function startSIR(){
                 neigh.select("rect").style("stroke-width",6);
                 neigh.select("rect").style("stroke-opacity",1);
                 d = neigh;
-                
+
                 //d3.selectAll(".link").transition().style("opacity",-1);
-                // now we select the neighboring circles and apply whatever style we want. 
-                // Note that we could also filter a selection of links in this way if we want to 
+                // now we select the neighboring circles and apply whatever style we want.
+                // Note that we could also filter a selection of links in this way if we want to
                 // Highlight those as well
 
-                // svg.selectAll("rect").filter(function (d, i) { 
+                // svg.selectAll("rect").filter(function (d, i) {
                 //   var selected;
                 //   for(node in nodeNeighbors){
                 //     if (i==node){
@@ -270,7 +270,7 @@ function startSIR(){
                 links.forEach(function(d) {
                     linkedByIndex[d.source.index + "," + d.target.index] = 1;
                 });
-                
+
                 var node = svg.selectAll(".node");
 
                 node.select("rect").transition().duration(1000).style("stroke-opacity", function(o) {
@@ -301,7 +301,7 @@ function startSIR(){
             delayLoop();
           }
 
-          reader.readAsText(file);    
+          reader.readAsText(file);
       } else {
           fileDisplayArea.innerText = "File not supported!"
       }
@@ -412,7 +412,7 @@ function runMain(nodes,links){
       .enter().append("svg:line")
       .attr("class", function(d){return "link "+d.type})
       .attr("marker-end", function(d){ return "url(#"+d.type+")"})
-        //.on("mouseover",mouseover)   
+        //.on("mouseover",mouseover)
       .style("stroke-width", function(d) { return Math.sqrt(d.value); });
 
   var node = svg.selectAll(".node")
@@ -420,10 +420,10 @@ function runMain(nodes,links){
       .enter().append("g")
       .attr("type", "g1")
      // .on("mouseover", mouseover)
-      .on("mouseover", function(d){ 
-            
+      .on("mouseover", function(d){
+
                 d3.select(this).select("rect").style("stroke-width", 6);
-               
+
                 var radios = document.getElementsByName('group1');
 
                 for (var i = 0, length = radios.length; i < length; i++) {
@@ -436,28 +436,28 @@ function runMain(nodes,links){
 
                 var nodeNeighbors = links.filter(function(link) {
                   // Figure out the neighboring node id's with brute strength because the graph is small
-                
-                  // Filter the list of links to only those links that have our target 
+
+                  // Filter the list of links to only those links that have our target
                   // node as a source or target
-                  
+
                     return link.source.index === d.index || link.target.index === d.index;
                    })
                   .map(function(link) {
                   // Map the list of links to a simple array of the neighboring indices - this is
-                  // technically not required but makes the code below simpler because we can use         
+                  // technically not required but makes the code below simpler because we can use
                   // indexOf instead of iterating and searching ourselves.
-                  return link.source.index === d.index ? link.target.index : link.source.index; 
+                  return link.source.index === d.index ? link.target.index : link.source.index;
                 });
-            
-        
+
+
                 // Reset all circles - we will do this in mouseout also
                 svg.selectAll('rect').style('stroke',null);
-                
+
                 svg.selectAll("rect").style("fill-opacity",null);
-                
+
                 //d3.selectAll(".link").transition().style("opacity",-1);
-                // now we select the neighboring circles and apply whatever style we want. 
-                // Note that we could also filter a selection of links in this way if we want to 
+                // now we select the neighboring circles and apply whatever style we want.
+                // Note that we could also filter a selection of links in this way if we want to
                 // Highlight those as well
 
                 svg.selectAll('g').filter(function(g) {
@@ -505,12 +505,12 @@ function runMain(nodes,links){
                     });
 
                     var connected = [d];
-                  
+
                     node.each(function(o) { if(isConnected(d, o)) { connected.push(o); } });
-                    
+
                     node.select("rect").transition().style("stroke-opacity", function(o) {
                         thisOpacity = .1;
-                        connected.forEach(function(e) { 
+                        connected.forEach(function(e) {
                             if(isConnected(e, o)) { thisOpacity = 1; }
                         });
                         this.setAttribute('fill-opacity', thisOpacity);
@@ -519,7 +519,7 @@ function runMain(nodes,links){
 
                     link.style("opacity", function(o) {
                         thisOpacity = .1;
-                        connected.forEach(function(e) { 
+                        connected.forEach(function(e) {
                             if(isConnected(e, o) || isConnected(o.source,d) || isConnected(o.target,d)) { thisOpacity = 1; }
                         });
                         this.setAttribute('fill-opacity', thisOpacity);
@@ -535,7 +535,7 @@ function runMain(nodes,links){
                           return "#000";
                         }
                     });
-                  
+
                 }else if(rg == 3){
 
                     var linkedByIndex = {};
@@ -544,21 +544,21 @@ function runMain(nodes,links){
                     });
 
                     var connected = [d];
-                  
-                    node.each(function(o) { 
-                      if(isConnected(d, o)) { 
+
+                    node.each(function(o) {
+                      if(isConnected(d, o)) {
                         connected.push(o);
                         node.each(function(f){
-                            if(isConnected(o,f)) { 
+                            if(isConnected(o,f)) {
                               connected.push(f);
                             }
                         });
-                      } 
+                      }
                     });
-                    
+
                     node.select("rect").transition().style("stroke-opacity", function(o) {
                         thisOpacity = .1;
-                        connected.forEach(function(e) { 
+                        connected.forEach(function(e) {
                             if(isConnected(e, o)) { thisOpacity = 1; }
                         });
                         this.setAttribute('fill-opacity', thisOpacity);
@@ -567,12 +567,12 @@ function runMain(nodes,links){
 
                     link.style("opacity", function(o) {
                         thisOpacity = .1;
-                          
+
                             connected.forEach(function(f) {
-                            if(isConnected(o.source,d) || isConnected(o.target,d) || ((isConnected(o.source,f) || isConnected(o.target,f)) && (isConnected(f, d) ) )) { 
+                            if(isConnected(o.source,d) || isConnected(o.target,d) || ((isConnected(o.source,f) || isConnected(o.target,f)) && (isConnected(f, d) ) )) {
                                   thisOpacity = 1;
                             }
-                          
+
                         });
                         this.setAttribute('fill-opacity', thisOpacity);
                         return thisOpacity;
@@ -589,16 +589,16 @@ function runMain(nodes,links){
                     });
                 }
 
-                          d3.select(this).select("rect").style("stroke", "orange"); 
+                          d3.select(this).select("rect").style("stroke", "orange");
                           d3.select(this).select("text").style("font-size", "20px");
 
                       //}//if range2
                   })
-              .on("mouseout",  function(d) { 
+              .on("mouseout",  function(d) {
                   // if(isConnected(d, o)) {
 
                       var timer_l = document.getElementById("range2").value;
-                      
+
                       if(timer_l<100){
                         timer = timer_l *1000;
                       }else{
@@ -606,12 +606,12 @@ function runMain(nodes,links){
                       }
 
                         var nodeNeighbors = links.filter(function(link) {
-                            // Filter the list of links to only those links that have our target 
+                            // Filter the list of links to only those links that have our target
                             // node as a source or target
                             return link.source.index === d.index || link.target.index === d.index;})
                         .map(function(link) {
                             // Map the list of links to a simple array of the neighboring indices - this is
-                            // technically not required but makes the code below simpler because we can use         
+                            // technically not required but makes the code below simpler because we can use
                             // indexOf instead of iterating and searching ourselves.
                             return link.source.index === d.index ? link.target.index : link.source.index; });
                         svg.selectAll('g').filter(function(g) {
@@ -622,7 +622,7 @@ function runMain(nodes,links){
                         .style('stroke', null);
 
                       d3.selectAll("g").select("rect").style('stroke',null);
-                      d3.select(this).select("rect").style("stroke-width", 1.5); 
+                      d3.select(this).select("rect").style("stroke-width", 1.5);
                       d3.select(this).select("text").style("font-size", "13px");
 
                       d3.selectAll("rect").transition().duration(timer).style("fill-opacity",1);
@@ -636,7 +636,7 @@ function runMain(nodes,links){
 
   node.append("rect")
       .attr("width", function(d){return d.name.length*10})
-      .attr("height", 25)   
+      .attr("height", 25)
       .attr("rx",20)
       .attr("ry",20)
       .attr("x", function(d){ return -d.name.length*5})
@@ -657,7 +657,7 @@ function runMain(nodes,links){
   function mousedown(d){
       d3.select("body").append("<div style=\"position: fixed ; top:500px ; left:100px\">text</div>")
   }
-      
+
   function mousedown() {
     // add links to any nearby nodes
     nodes.forEach(function(target) {
@@ -672,7 +672,7 @@ function runMain(nodes,links){
 
   registerKeyboardHandler = function(callback) {
     var callback = callback;
-    d3.select(window).on("keydown", callback);  
+    d3.select(window).on("keydown", callback);
   };
 
   // Move d to be adjacent to the cluster node.
@@ -751,8 +751,8 @@ function runMain(nodes,links){
       var yMax = 3000;
       var yMin = 700;
 
-      //console.log("here", d3.event.translate, d3.event.scale); 
-      svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");     
+      //console.log("here", d3.event.translate, d3.event.scale);
+      svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
 
       var xoffset = (xMax + xMin) / 2;
       var yoffset = (yMax + yMin) / 2;
@@ -775,7 +775,7 @@ function runMain(nodes,links){
 
       /*svg.attr("d", line)
           .attr("transform", null)
-          .transition()       
+          .transition()
           .ease("linear");*/
   }
 
@@ -783,7 +783,7 @@ function runMain(nodes,links){
       link
           .attr("x1", function(d) { return d.source.x; })
           .attr("y1", function(d) { return d.source.y; })
-   
+
           .attr("x2", function(d) { return d.target.x; })
           .attr("y2", function(d) { return d.target.y; });
 
@@ -885,7 +885,7 @@ function runMain(nodes,links){
     return function() {
       //var p = d3.svg.mouse(self.vis[0][0]),
          // t = d3.event.changedTouches;
-      
+
       if (self.dragged) {
         self.dragged.y = self.y.invert(Math.max(0, Math.min(self.size.height, p[1])));
         self.update();
@@ -944,8 +944,8 @@ function runMain(nodes,links){
         d3.event.preventDefault();
         d3.event.stopPropagation();
       }
-      if (self.dragged) { 
-        self.dragged = null 
+      if (self.dragged) {
+        self.dragged = null
       }
     }
   }
@@ -956,7 +956,7 @@ function generateDistr(button){
 
     var elem = document.getElementById("generateDistr");
     var elem2 = document.getElementById("deg");
-    
+
     if (elem.value=="Degree distribution" || elem2.value=="Degree distribution"){
       document.getElementById('distr').innerHTML="Close distribution";
       var ar = [];
@@ -964,7 +964,7 @@ function generateDistr(button){
 
       document.getElementById('chart2').innerHTML='<h5>Degree distribution</h5><div class="expl">For xAxis value=30 we count all nodes with degree>=30.</div><input type="button" id="deg" onclick="generateDistr(this)" value="Close distribution"><br>';
       jQuery('body').animate({scrollTop:$(window).height()});
-	  
+
 
       //count all nodes
       var nodes_counter=0;
@@ -984,17 +984,17 @@ function generateDistr(button){
       var counter_bigger = 0;
       var d_counter = '{"Degrees":[';
 
-      for (var i=1;i<30;i++){ 
+      for (var i=1;i<30;i++){
           counter = 0;
           d3.selectAll("g").select("rect").each( function(d){
-            
+
               if(parseInt(d3.select(this).attr("weight")) == i){
                   counter++;
               }
-            
+
           });
           d_counter+= '{"number":'+i+',"value":'+counter+'},';
-          
+
       }
 
       d3.selectAll("g").select("rect").each( function(d){
@@ -1006,7 +1006,7 @@ function generateDistr(button){
       d_counter+= '{"number":'+30+',"value":'+counter_bigger+'},';
       d_counter = d_counter.slice(0,d_counter.length-1);
       d_counter += "]}";;
-      
+
       var c=0;
       d3.selectAll("g").select("rect").each( function(d){
           if(d3.select(this).attr("weight") != null ){
@@ -1017,9 +1017,9 @@ function generateDistr(button){
       });
 
       var json_parsed = $.parseJSON(d_counter);
-      
+
       var data = json_parsed.Degrees;
-      
+
       var margin = {top: 20, right: 40, bottom: 50, left: 50},
           width = 760 - margin.left - margin.right,
           height = 500 - margin.top - margin.bottom,
@@ -1072,7 +1072,7 @@ function generateDistr(button){
 
       var xScale = d3.scale.ordinal()
         .domain(d3.range(data.length))
-        .rangeRoundBands([0, width], 0.05); 
+        .rangeRoundBands([0, width], 0.05);
 
       var yScale = d3.scale.linear()
         .domain([0, d3.max(data, function(d) {return d.value;})])
@@ -1106,8 +1106,8 @@ function generateDistr(button){
             .attr("width", x.rangeBand())
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height - y(d.value); });
-     
-      // add legend   
+
+      // add legend
       var legend = svg.append("g")
           .attr("class", "legend")
           //.attr("x", w - 65)
@@ -1135,7 +1135,7 @@ function generateDistr(button){
            .attr("x", 50)
            .attr("fill", "white")
            .text("Total links of the graph: "+links_counter+".");
-      
+
 
       //indegree and outdegree charts
       document.getElementById('chart3').innerHTML='<h5>Indegree distribution</h5>';
@@ -1146,7 +1146,7 @@ function generateDistr(button){
       var d_counter_in = '{"Degrees":[';
       var d_counter_out = '{"Degrees":[';
       var b=0;
-      for (var i=1;i<31;i++){ 
+      for (var i=1;i<31;i++){
           counter = 0;
           counter_out_all=0;
           counter_in_all=0;
@@ -1155,10 +1155,10 @@ function generateDistr(button){
               counter_in=0;
               var nodeNeighbors = links.filter(function(link) {
                 // Figure out the neighboring node id's with brute strength because the graph is small
-              
-                // Filter the list of links to only those links that have our target 
+
+                // Filter the list of links to only those links that have our target
                 // node as a source or target
-                
+
                   return link.source === d || link.target=== d;
               });
 
@@ -1184,7 +1184,7 @@ function generateDistr(button){
           counter_in_ar[i]=counter_in_all;
           d_counter_out+= '{"number":'+i+',"value":'+counter_out_all+'},';
           d_counter_in+= '{"number":'+i+',"value":'+counter_in_all+'},';
-          
+
       }
       d_counter_in = d_counter_in.slice(0,d_counter_in.length-1);
       d_counter_in += "]}";
@@ -1194,7 +1194,7 @@ function generateDistr(button){
 
       var json_parsed_in = $.parseJSON(d_counter_in);
       var json_parsed_out = $.parseJSON(d_counter_out);
-     
+
       var data_in = json_parsed_in.Degrees;
       var data_out = json_parsed_out.Degrees;
 
@@ -1246,7 +1246,7 @@ function generateDistr(button){
 
       var xScale = d3.scale.ordinal()
         .domain(d3.range(data_in.length))
-        .rangeRoundBands([0, width], 0.05); 
+        .rangeRoundBands([0, width], 0.05);
 
       var yScale = d3.scale.linear()
         .domain([0, d3.max(data_in, function(d) {return d.value;})])
@@ -1260,7 +1260,7 @@ function generateDistr(button){
           return d.value;
          })
          .attr("y", function(d) { return height - .5; })
-         
+
          .attr("text-anchor", "middle")
          .attr("x", function(d, i) {
           return xScale(i) + xScale.rangeBand() / 2;
@@ -1289,7 +1289,7 @@ function generateDistr(button){
             .duration(1000)
             .delay(100);
 
-      // add legend   
+      // add legend
       var legend = svg.append("g")
           .attr("class", "legend")
           //.attr("x", w - 65)
@@ -1358,7 +1358,7 @@ function generateDistr(button){
 
       var xScale = d3.scale.ordinal()
         .domain(d3.range(data_out.length))
-        .rangeRoundBands([0, width], 0.05); 
+        .rangeRoundBands([0, width], 0.05);
 
       var yScale = d3.scale.linear()
         .domain([0, d3.max(data_out, function(d) {return d.value;})])
@@ -1400,7 +1400,7 @@ function generateDistr(button){
             .duration(1000)
             .delay(100);
 
-      // add legend   
+      // add legend
       var legend = svg.append("g")
           .attr("class", "legend")
           //.attr("x", w - 65)
@@ -1479,7 +1479,7 @@ function searchNode(){
 */
 function createAdjacencyMatrix(A,nodeNames){
     var rect_counter = 0;
-    
+
     d3.select("#chart").selectAll("g").select("rect").each(function(d){
         var that = d3.select(this);
         var w = parseInt(that.attr("weight"));
@@ -1502,8 +1502,8 @@ function createAdjacencyMatrix(A,nodeNames){
                 var wo = parseInt(other.attr("weight"));
                 if(wo){
                     // Figure out the neighboring node id's with brute strength because the graph is small
-                  
-                    // Filter the list of links to only those links that have our target 
+
+                    // Filter the list of links to only those links that have our target
                     // node as a source or target
                     links.forEach(function(li) {
                         if(li.source===d && li.target===g){
@@ -1519,26 +1519,26 @@ function createAdjacencyMatrix(A,nodeNames){
             c++;
         }
     });
-    
+
 }
 
 
 function rowStochastic(damping_factor,A) {
-    
+
     var row_length = A.length;
     var d = (1 - damping_factor) / row_length;
- 
+
     var row_total = [];
- 
+
     for (var x = 0; x < row_length; x++) {
         row_total.push(0);
         for (y = 0; y < row_length; y++) {
             row_total[x] += A[x][y];
         }
     }
- 
+
     var a1 = A;
- 
+
     for (var x = 0; x < row_length; x++) {
         for (var y = 0; y < row_length; y++) {
             if (row_total[x] > 0) {
@@ -1549,52 +1549,52 @@ function rowStochastic(damping_factor,A) {
             }
         }
     }
- 
+
     return $M(a1);
- 
+
 }
 
 function normalize(s) {
     var row_length = s.elements.length;
     var t = 0;
- 
+
     for (var i = 0; i < row_length; i++) {
         t += s.elements[i];
     }
- 
+
     return s.multiply((1.0/t));
 }
 
 function eigenvector(s) {
     var tolerance = 0.000001;
- 
+
     var row_length = s.elements[0].length;
- 
+
     var a = [];
- 
+
     for (var i = 0; i < row_length; i++) {
         a.push(1);
     }
- 
+
     var x = $V(a);
- 
+
     var c_old = 0;
- 
+
     for (var i = 0; i < 100; i++) {
         var x_new = normalize(x);
         var c_new = x_new[0];
- 
+
         var e = 100 * (c_new - c_old)/c_new;
         if (Math.abs(e) < tolerance) {
             break;
         }
- 
+
         x = s.multiply(x_new);
         c_old = c_new;
     }
- 
+
     return $V(x);
- 
+
 }
 
 function sortWithIndeces(toSort) {
@@ -1662,21 +1662,21 @@ $(document).ready(function() {
   $('#mySelect').focus(function() {
     document.getElementById("srch-term").value = document.getElementById("mySelect").value;
   });
-  
+
 });
 */
 $('#srch-term').typeahead({
     source: function (query, process) {
         names = [];
         map = {};
-        
+
         var data = nodes;
-     
+
         $.each(data, function (i, node) {
             map[node.name] = node;
             names.push(node.name);
         });
-     
+
         process(names);
     },
     updater: function (item) {
