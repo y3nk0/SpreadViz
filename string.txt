@@ -1,3 +1,7 @@
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="in_file"; filename="output.txt"
+Content-Type: text/plain
+
 source,target
 0,1
 0,2
@@ -1893,3 +1897,33 @@ source,target
 2,1508
 2,1509
 2,1011
+
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="group1"
+
+1
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="group2"
+
+1
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="s_node"
+
+0
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="group3"
+
+1
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="beta"
+
+0.5
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="gamma"
+
+0.5
+------WebKitFormBoundary67Ue7HOkaQRTbqNB
+Content-Disposition: form-data; name="group4"
+
+1
+------WebKitFormBoundary67Ue7HOkaQRTbqNB--

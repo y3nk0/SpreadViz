@@ -268,12 +268,28 @@ $('#myForm').submit(function(e){
         processData : false,
         contentType : false,
         success: function(response) {
-
+          // alert(response);
+          // if (response == 1){
+              // Success message
             $('#success').html("<div class='alert alert-success'>");
-            $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;").append("</button>");
+            $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                .append("</button>");
             $('#success > .alert-success').append("<strong>SIR ran successfully. </strong>");
             $('#success > .alert-success').append('</div>');
-            readSIR();
+              readSIR();
+              //clear all fields
+              // $('#Form').trigger("reset");
+          // }else{
+          //     // Fail message
+          //     $('#success').html("<div class='alert alert-danger'>");
+          //     $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+          //         .append("</button>");
+          //     $('#success > .alert-danger').append("<strong>Sorry, it seems the captcha is wrong...</strong>");
+          //     $('#success > .alert-danger').append('</div>');
+          //     //clear all fields
+          //     //$('#contactForm').trigger("reset");
+          //
+          // }
         },
     });
 });
